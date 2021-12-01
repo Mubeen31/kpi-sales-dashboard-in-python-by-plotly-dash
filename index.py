@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from dash.exceptions import PreventUpdate
 import pandas as pd
+import numpy as np
 import pathlib
 
 PATH = pathlib.Path(__file__).parent
@@ -18,6 +19,7 @@ data.drop(data.index[-1], inplace = True)
 # Remove commas from columns
 data['Revenues'] = data['Revenues'].str.replace(',', '')
 data['Total Cost (Sales & Marketing)'] = data['Total Cost (Sales & Marketing)'].str.replace(',', '')
+data['Target'] = data['Target'].str.replace(',', '')
 
 # Change data type of columns
 data['Revenues'] = data['Revenues'].astype('int64')
@@ -26,6 +28,9 @@ data['Orders Placed'] = data['Orders Placed'].astype('int64')
 data['Customers'] = data['Customers'].astype('int64')
 data['Purchased Items'] = data['Purchased Items'].astype('int64')
 data['Inquiries'] = data['Inquiries'].astype('int64')
+data['Target'] = data['Target'].astype('int64')
+data['Lead'] = data['Lead'].astype('int64')
+data['Opportunity'] = data['Opportunity'].astype('int64')
 
 # print(data['Conversion Rate'])
 
@@ -121,14 +126,54 @@ app.layout = html.Div([
             ], className = 'chart')
         ], className = 'text_graph_column'),
 
-    ], className = 'flex_container')
+    ], className = 'flex_container'),
+
+html.Div([
+html.Div([
+    html.Div([
+        dcc.Graph(id = 'donut_chart1',
+                  config = {'displayModeBar': False},
+                  className = 'donut_chart_size'),
+        html.Div(id = 'donut_chart_text1',
+                 className = 'donut_chart_text')
+    ], className = 'chart_container'),
+
+html.Div([
+        dcc.Graph(id = 'donut_chart2',
+                  config = {'displayModeBar': False},
+                  className = 'donut_chart_size'),
+        html.Div(id = 'donut_chart_text2',
+                 className = 'donut_chart_text')
+    ], className = 'chart_container'),
+
+html.Div([
+        dcc.Graph(id = 'donut_chart3',
+                  config = {'displayModeBar': False},
+                  className = 'donut_chart_size'),
+        html.Div(id = 'donut_chart_text3',
+                 className = 'donut_chart_text')
+    ], className = 'chart_container')
+    ], className = 'donut_chart_column'),
+
+html.Div([
+dcc.Graph(id = 'funnel_chart',
+                  config = {'displayModeBar': False},
+                  className = 'funnel_chart_size'),
+dcc.Graph(id = 'bar_chart',
+                  config = {'displayModeBar': False},
+                  className = 'bar_chart_size'),
+    ], className = 'funnel_bar_chart_column'),
+dcc.Graph(id = 'stack_bar_chart',
+                  config = {'displayModeBar': False},
+                  className = 'stack_bar_chart_size'),
+    ], className = 'create_row')
 
 ])
 
 
 @app.callback(Output('text1', 'children'),
               [Input('select_month', 'value')])
-def update_graph(select_month):
+def update_text(select_month):
     if select_month is None:
         raise PreventUpdate
     else:
@@ -357,7 +402,7 @@ def update_graph(select_month):
 
 @app.callback(Output('text2', 'children'),
               [Input('select_month', 'value')])
-def update_graph(select_month):
+def update_text(select_month):
     if select_month is None:
         raise PreventUpdate
     else:
@@ -588,7 +633,7 @@ def update_graph(select_month):
 
 @app.callback(Output('text3', 'children'),
               [Input('select_month', 'value')])
-def update_graph(select_month):
+def update_text(select_month):
     if select_month is None:
         raise PreventUpdate
     else:
@@ -817,7 +862,7 @@ def update_graph(select_month):
 
 @app.callback(Output('text4', 'children'),
               [Input('select_month', 'value')])
-def update_graph(select_month):
+def update_text(select_month):
     if select_month is None:
         raise PreventUpdate
     else:
@@ -1046,7 +1091,7 @@ def update_graph(select_month):
 
 @app.callback(Output('text5', 'children'),
               [Input('select_month', 'value')])
-def update_graph(select_month):
+def update_text(select_month):
     if select_month is None:
         raise PreventUpdate
     else:
@@ -1275,7 +1320,7 @@ def update_graph(select_month):
 
 @app.callback(Output('text6', 'children'),
               [Input('select_month', 'value')])
-def update_graph(select_month):
+def update_text(select_month):
     if select_month is None:
         raise PreventUpdate
     else:
@@ -1506,6 +1551,399 @@ def update_graph(select_month):
 
     }
 
+
+@app.callback(Output('donut_chart1', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    if select_month is None:
+        raise PreventUpdate
+    else:
+        # Calculate % profit
+        data['% Profit'] = (data['Profit'] / data['Revenues']) * 100
+        filter_month = data[data['Months'] == select_month]
+        percentage_profit = filter_month['% Profit'].iloc[0]
+        remaining_percentage_profit = 100 - (filter_month['% Profit'].iloc[0])
+        colors = ['#DEB340', '#335476']
+
+    return {
+        'data': [go.Pie(labels = ['', ''],
+                        values = [percentage_profit, remaining_percentage_profit],
+                        marker = dict(colors = colors,
+                                      line=dict(color='#DEB340', width=2)),
+                        hoverinfo = 'skip',
+                        textinfo = 'text',
+                        hole = .7,
+                        rotation = 90
+                        )],
+
+        'layout': go.Layout(
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            margin = dict(t = 35, b = 10, r = 0, l = 0),
+            showlegend = False,
+            title={'text': '% Sales Profit',
+                   'y': 0.95,
+                   'x': 0.5,
+                   'xanchor': 'center',
+                   'yanchor': 'top'},
+            titlefont = {'color': 'white',
+                         'size': 15},
+        ),
+
+    }
+
+
+@app.callback(Output('donut_chart_text1', 'children'),
+              [Input('select_month', 'value')])
+def update_text(select_month):
+    if select_month is None:
+        raise PreventUpdate
+    else:
+        filter_month = data[data['Months'] == select_month]
+        percentage_profit = filter_month['% Profit'].iloc[0]
+
+    return [
+        html.P('{0:,.0f}%'.format(percentage_profit),
+               style = {
+                   'color': '#DEB340',
+                   'fontSize': 25,
+                   'font-weight': 'bold'
+               }),
+    ]
+
+@app.callback(Output('donut_chart2', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    if select_month is None:
+        raise PreventUpdate
+    else:
+        # Calculate % target
+        data['% Target'] = (data['Revenues'] / data['Target']) * 100
+        filter_month = data[data['Months'] == select_month]
+        percentage_target = filter_month['% Target'].iloc[0]
+        remaining_percentage_target = 100 - (filter_month['% Target'].iloc[0])
+        colors = ['#DEB340', '#335476']
+
+    return {
+        'data': [go.Pie(labels = ['', ''],
+                        values = [percentage_target, remaining_percentage_target],
+                        marker = dict(colors = colors,
+                                      line=dict(color='#DEB340', width=2)),
+                        hoverinfo = 'skip',
+                        textinfo = 'text',
+                        hole = .7,
+                        rotation = 0
+                        )],
+
+        'layout': go.Layout(
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            margin = dict(t = 35, b = 10, r = 0, l = 0),
+            showlegend = False,
+            title={'text': 'Monthly Goal',
+                   'y': 0.95,
+                   'x': 0.5,
+                   'xanchor': 'center',
+                   'yanchor': 'top'},
+            titlefont = {'color': 'white',
+                         'size': 15},
+        ),
+
+    }
+
+
+@app.callback(Output('donut_chart_text2', 'children'),
+              [Input('select_month', 'value')])
+def update_text(select_month):
+    if select_month is None:
+        raise PreventUpdate
+    else:
+        filter_month = data[data['Months'] == select_month]
+        percentage_target = filter_month['% Target'].iloc[0]
+
+    return [
+        html.P('{0:,.0f}%'.format(percentage_target),
+               style = {
+                   'color': '#DEB340',
+                   'fontSize': 25,
+                   'font-weight': 'bold'
+               }),
+    ]
+
+
+@app.callback(Output('donut_chart3', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    total_revenues = data['Revenues'].sum()
+    total_target = data['Target'].sum()
+    ytd_goal = (total_revenues / total_target) * 100
+    colors = ['#DEB340']
+
+    return {
+        'data': [go.Pie(labels = [''],
+                        values = [ytd_goal],
+                        marker = dict(colors = colors,
+                                      line=dict(color='#DEB340', width=2)),
+                        hoverinfo = 'skip',
+                        textinfo = 'text',
+                        hole = .7,
+                        rotation = 90
+                        )],
+
+        'layout': go.Layout(
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            margin = dict(t = 35, b = 10, r = 0, l = 0),
+            showlegend = False,
+            title={'text': 'YTD Goal',
+                   'y': 0.95,
+                   'x': 0.5,
+                   'xanchor': 'center',
+                   'yanchor': 'top'},
+            titlefont = {'color': 'white',
+                         'size': 15},
+        ),
+
+    }
+
+
+@app.callback(Output('donut_chart_text3', 'children'),
+              [Input('select_month', 'value')])
+def update_text(select_month):
+    total_revenues = data['Revenues'].sum()
+    total_target = data['Target'].sum()
+    ytd_goal = (total_revenues / total_target) * 100
+
+    return [
+        html.P('{0:,.0f}%'.format(ytd_goal),
+               style = {
+                   'color': '#DEB340',
+                   'fontSize': 25,
+                   'font-weight': 'bold'
+               }),
+    ]
+
+
+@app.callback(Output('funnel_chart', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    if select_month is None:
+        raise PreventUpdate
+    else:
+        filter_month = data[data['Months'] == select_month]
+        inquiries = filter_month['Inquiries'].iloc[0]
+        lead = filter_month['Lead'].iloc[0]
+        opportunity = filter_month['Opportunity'].iloc[0]
+        sales = filter_month['Sales'].iloc[0]
+        object_data = [['Inquiries', inquiries], ['Lead', lead], ['Opportunity', opportunity], ['Sales', sales]]
+        df = pd.DataFrame(object_data, columns = ['Text', 'Value'])
+        df1 = df.sort_values(by = ['Value'], ascending = False)
+
+    return {
+        'data':[
+            go.Funnel(
+                x = df1['Value'],
+                y = df1['Text'],
+                textposition = "inside",
+                textinfo = "value",
+                textfont = dict(
+                    family = "Arial Black",
+                    size = 14,
+                    color = "#A23C33"
+                ),
+                marker = {"color": '#DEB340'},
+                hoverinfo = 'skip',
+            )],
+
+
+        'layout': go.Layout(
+             plot_bgcolor='rgba(0,0,0,0)',
+             paper_bgcolor='rgba(0,0,0,0)',
+             margin = dict(r = 0, t = 30, b = 30),
+             title = {'text': 'Sales Funnel',
+                      'y': 0.97,
+                      'x': 0.5,
+                      'xanchor': 'center',
+                      'yanchor': 'top'},
+             titlefont = {'color': 'white',
+                          'size': 15},
+
+             yaxis = dict(title = '<b></b>',
+                          visible = True,
+                          color = 'white',
+                          showline = True,
+                          showgrid = False,
+                          showticklabels = True,
+                          linecolor = 'white',
+                          linewidth = 1,
+                          ticks = 'outside',
+                          tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                          ),
+        )
+
+    }
+
+
+@app.callback(Output('bar_chart', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    if select_month is None:
+        raise PreventUpdate
+    else:
+        filter_month = data[data['Months'] == select_month]
+        target = filter_month['Target'].iloc[0]
+        revenues = filter_month['Revenues'].iloc[0]
+        object_data = [['Target', target], ['Revenues', revenues]]
+        df2 = pd.DataFrame(object_data, columns = ['Text', 'Value'])
+
+
+    return {
+        'data': [go.Bar(x = df2['Value'],
+                        y = df2['Text'],
+                        text = df2['Value'],
+                        texttemplate = '$' + '%{text:,.0f}',
+                        textposition = 'inside',
+                        marker = dict(color='#DEB340'),
+                        width = 0.5,
+                        textfont = dict(
+                            family = "Arial Black",
+                            size = 14,
+                            color = "#A23C33"
+                        ),
+                        orientation = 'h',
+                        hoverinfo = 'skip'
+                        )],
+
+        'layout': go.Layout(
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            title = {'text': 'Revenue vs Target',
+                     'y': 0.97,
+                     'x': 0.5,
+                     'xanchor': 'center',
+                     'yanchor': 'top'},
+            titlefont = {'color': 'white',
+                         'size': 15},
+            margin = dict(r = 20, t = 50, b = 50),
+            xaxis = dict(title = '<b></b>',
+                         tickprefix = '$',
+                         tickformat = ',.0f',
+                         visible = True,
+                         color = 'white',
+                         showline = False,
+                         showgrid = True,
+                         showticklabels = True,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = '',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+
+            yaxis = dict(title = '<b></b>',
+                         visible = True,
+                         color = 'white',
+                         showline = True,
+                         showgrid = False,
+                         showticklabels = True,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = 'outside',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+
+                )
+    }
+
+
+@app.callback(Output('stack_bar_chart', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    sales_target = data['Target']
+    above_the_target = data['Revenues']
+    data['Below the Target'] = np.where(data['Revenues'] < data['Target'], data['Revenues'], 0)
+    months = data['Months']
+
+
+    return {
+        'data': [go.Bar(x = months,
+                        y = above_the_target,
+                        name = 'Above the Target',
+                        marker = dict(color='#00B0F0'),
+                        width = 0.5,
+                        orientation = 'v',
+                        hoverinfo = 'skip'
+                        ),
+                 go.Bar(x = months,
+                        y = data['Below the Target'],
+                        name = 'Below the Target',
+                        marker = dict(color = '#EBD18C'),
+                        width = 0.5,
+                        orientation = 'v',
+                        hoverinfo = 'skip'
+                        )],
+
+        'layout': go.Layout(
+            barmode = 'overlay',
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            title = {'text': 'Sales vs Goal',
+                     'y': 0.97,
+                     'x': 0.5,
+                     'xanchor': 'center',
+                     'yanchor': 'top'},
+            titlefont = {'color': 'white',
+                         'size': 15},
+            margin = dict(r = 20, t = 30, b = 10),
+            xaxis = dict(title = '<b></b>',
+                         visible = True,
+                         color = 'white',
+                         showline = True,
+                         showgrid = False,
+                         showticklabels = True,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = 'outside',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+
+            yaxis = dict(title = '<b></b>',
+                         tickprefix = '$',
+                         tickformat = ',.0f',
+                         visible = True,
+                         color = 'white',
+                         showline = True,
+                         showgrid = False,
+                         showticklabels = True,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = 'outside',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+            legend = {
+                'orientation': 'h',
+                'bgcolor': '#335476',
+                'xanchor': 'center', 'x': 0.5, 'y': -0.2},
+            font = dict(
+                family = "sans-serif",
+                size = 12,
+                color = 'white'),
+        )
+    }
 
 
 if __name__ == "__main__":

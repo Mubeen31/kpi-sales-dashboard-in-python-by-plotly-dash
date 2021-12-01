@@ -184,3 +184,63 @@ body {
    flex-direction: column;
    margin-top: 35px;
 }
+
+.donut_chart_size {
+   background-color: #335476;
+   width: 250px;
+   height: 196.8px;
+}
+
+.donut_chart_text {
+   display: flex;
+   flex-direction: row;
+   position: absolute;
+   margin-top: 90px;
+}
+
+.chart_container {
+   display: flex;
+   flex-wrap: wrap;
+   justify-content: center;
+   margin-top: 10px;
+   gap: 10px;
+}
+
+.donut_chart_column {
+  display: flex;
+  flex-direction: column;
+}
+
+.funnel_chart_size {
+  background-color: #335476;
+  width: 350px;
+  height: 300px;
+  margin-top: 10px;
+}
+
+.create_row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.bar_chart_size {
+  background-color: #335476;
+  width: 350px;
+  height: 300px;
+  margin-top: 10px;
+}
+
+.funnel_bar_chart_column {
+  display: flex;
+  flex-direction: column;
+}
+
+.stack_bar_chart_size {
+  background-color: #335476;
+  width: 930px;
+  height: 300px;
+  margin-top: 10px;
+}
