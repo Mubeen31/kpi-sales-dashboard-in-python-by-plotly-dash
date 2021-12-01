@@ -244,3 +244,15 @@ body {
   height: 300px;
   margin-top: 10px;
 }
+
+.percent_bar_chart_size {
+  background-color: #335476;
+  width: 465px;
+  height: 300px;
+  margin-top: 10px;
+}
+
+.bar_chart_column {
+  display: flex;
+  flex-direction: column;
+}

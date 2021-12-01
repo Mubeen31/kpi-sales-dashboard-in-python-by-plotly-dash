@@ -163,9 +163,15 @@ dcc.Graph(id = 'bar_chart',
                   config = {'displayModeBar': False},
                   className = 'bar_chart_size'),
     ], className = 'funnel_bar_chart_column'),
+
+    html.Div([
 dcc.Graph(id = 'stack_bar_chart',
                   config = {'displayModeBar': False},
                   className = 'stack_bar_chart_size'),
+dcc.Graph(id = 'percent_bar_chart',
+                  config = {'displayModeBar': False},
+                  className = 'percent_bar_chart_size'),
+        ], className = 'bar_chart_column')
     ], className = 'create_row')
 
 ])
@@ -1889,7 +1895,15 @@ def update_graph(select_month):
                         width = 0.5,
                         orientation = 'v',
                         hoverinfo = 'skip'
-                        )],
+                        ),
+                 go.Scatter(x = months,
+                            y = sales_target,
+                            name = 'Sales Target',
+                            mode = 'markers',
+                            marker = dict(color = '#7030A0', size = 25, symbol = 'line-ew',
+                                          line = dict(color = '#E6314C', width = 5)),
+                            hoverinfo = 'skip'
+                            )],
 
         'layout': go.Layout(
             barmode = 'overlay',
@@ -1942,6 +1956,75 @@ def update_graph(select_month):
                 family = "sans-serif",
                 size = 12,
                 color = 'white'),
+        )
+    }
+
+
+@app.callback(Output('percent_bar_chart', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    monthly_sales_growth = data['pct_Difference']
+    months = data['Months']
+    data['Color'] = np.where(data['pct_Difference'] > 0, '#DEB340', '#A23C33')
+
+
+    return {
+        'data': [go.Bar(x = months,
+                        y = monthly_sales_growth,
+                        text = monthly_sales_growth,
+                        texttemplate = '%{text:.1f}%',
+                        textposition = "outside",
+                        textfont = dict(
+                            family = "sans-serif",
+                            size = 14,
+                            color = "white"
+                        ),
+                        marker = dict(color=data['Color']),
+                        width = 0.9,
+                        orientation = 'v',
+                        hoverinfo = 'skip'
+                        )],
+
+        'layout': go.Layout(
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            title = {'text': 'Monthly Sales Growth',
+                     'y': 0.97,
+                     'x': 0.5,
+                     'xanchor': 'center',
+                     'yanchor': 'top'},
+            titlefont = {'color': 'white',
+                         'size': 15},
+            margin = dict(l = 20, r = 20, t = 20, b = 20),
+            xaxis = dict(title = '<b></b>',
+                         visible = True,
+                         color = 'white',
+                         showline = True,
+                         showgrid = False,
+                         showticklabels = True,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = '',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+
+            yaxis = dict(title = '<b></b>',
+                         visible = True,
+                         color = 'white',
+                         showline = False,
+                         showgrid = False,
+                         showticklabels = False,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = '',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
         )
     }
 
