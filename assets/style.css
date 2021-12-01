@@ -77,7 +77,6 @@ body {
    display: flex;
    flex-direction: row;
    gap: 3px;
-   position: relative;
 }
 
 .title_and_drop_down_list {
@@ -255,4 +254,102 @@ body {
 .bar_chart_column {
   display: flex;
   flex-direction: column;
+}
+
+.background_size1 {
+  background-color: #335476;
+  width: 456px;
+  height: 147.5px;
+}
+
+.chart_text1 {
+  display: flex;
+  flex-direction: row;
+}
+
+.average_sales_bar_chart1 {
+  display: flex;
+  flex-direction: row;
+  width: 365px;
+  height: 270px;
+  margin-top: -95px;
+  margin-left: -25px;
+}
+
+.average_sales_bar_chart_row1 {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+}
+
+.average_sales_bar_chart_column1 {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.background_size2 {
+  background-color: #335476;
+  width: 456px;
+  height: 147.5px;
+  margin-top: 5px;
+  position: absolute;
+}
+
+.chart_text2 {
+  display: flex;
+  flex-direction: row;
+}
+
+.average_sales_bar_chart2 {
+  display: flex;
+  flex-direction: row;
+  width: 365px;
+  height: 270px;
+  margin-top: -90px;
+  margin-left: 10px;
+}
+
+.average_sales_bar_chart_row2 {
+  display: flex;
+  flex-direction: row;
+  position: absolute;
+}
+
+.average_sales_bar_chart_column2 {
+  display: flex;
+  flex-direction: column;
+}
+
+.average_sales_row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.average_sales_text {
+  display: flex;
+  flex-direction: row;
+  margin-top: 20px;
+  margin-left: 10px;
+  white-space: pre;
+}
+
+.average_sales_value {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.average_sales_column {
+  display: flex;
+  flex-direction: column;
+}
+
+.average_sales_chart_column {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
 }

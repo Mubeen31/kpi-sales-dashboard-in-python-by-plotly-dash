@@ -40,7 +40,7 @@ external_stylesheets = [meta_tags, font_awesome]
 
 app = dash.Dash(__name__, external_stylesheets = external_stylesheets)
 
-app.layout = html.Div([
+app.layout = html.Div((
     html.Div([
         html.Div([
             html.Img(src = app.get_asset_url('statistics.png'),
@@ -128,53 +128,77 @@ app.layout = html.Div([
 
     ], className = 'flex_container'),
 
-html.Div([
-html.Div([
     html.Div([
-        dcc.Graph(id = 'donut_chart1',
-                  config = {'displayModeBar': False},
-                  className = 'donut_chart_size'),
-        html.Div(id = 'donut_chart_text1',
-                 className = 'donut_chart_text')
-    ], className = 'chart_container'),
+        html.Div([
+            html.Div([
+                dcc.Graph(id = 'donut_chart1',
+                          config = {'displayModeBar': False},
+                          className = 'donut_chart_size'),
+                html.Div(id = 'donut_chart_text1',
+                         className = 'donut_chart_text')
+            ], className = 'chart_container'),
 
-html.Div([
-        dcc.Graph(id = 'donut_chart2',
-                  config = {'displayModeBar': False},
-                  className = 'donut_chart_size'),
-        html.Div(id = 'donut_chart_text2',
-                 className = 'donut_chart_text')
-    ], className = 'chart_container'),
+            html.Div([
+                dcc.Graph(id = 'donut_chart2',
+                          config = {'displayModeBar': False},
+                          className = 'donut_chart_size'),
+                html.Div(id = 'donut_chart_text2',
+                         className = 'donut_chart_text')
+            ], className = 'chart_container'),
 
-html.Div([
-        dcc.Graph(id = 'donut_chart3',
-                  config = {'displayModeBar': False},
-                  className = 'donut_chart_size'),
-        html.Div(id = 'donut_chart_text3',
-                 className = 'donut_chart_text')
-    ], className = 'chart_container')
-    ], className = 'donut_chart_column'),
+            html.Div([
+                dcc.Graph(id = 'donut_chart3',
+                          config = {'displayModeBar': False},
+                          className = 'donut_chart_size'),
+                html.Div(id = 'donut_chart_text3',
+                         className = 'donut_chart_text')
+            ], className = 'chart_container')
+        ], className = 'donut_chart_column'),
 
-html.Div([
-dcc.Graph(id = 'funnel_chart',
-                  config = {'displayModeBar': False},
-                  className = 'funnel_chart_size'),
-dcc.Graph(id = 'bar_chart',
-                  config = {'displayModeBar': False},
-                  className = 'bar_chart_size'),
-    ], className = 'funnel_bar_chart_column'),
+        html.Div([
+            dcc.Graph(id = 'funnel_chart',
+                      config = {'displayModeBar': False},
+                      className = 'funnel_chart_size'),
+            dcc.Graph(id = 'bar_chart',
+                      config = {'displayModeBar': False},
+                      className = 'bar_chart_size'),
+        ], className = 'funnel_bar_chart_column'),
 
-    html.Div([
-dcc.Graph(id = 'stack_bar_chart',
-                  config = {'displayModeBar': False},
-                  className = 'stack_bar_chart_size'),
-dcc.Graph(id = 'percent_bar_chart',
-                  config = {'displayModeBar': False},
-                  className = 'percent_bar_chart_size'),
+        html.Div([
+            dcc.Graph(id = 'stack_bar_chart',
+                      config = {'displayModeBar': False},
+                      className = 'stack_bar_chart_size'),
+            html.Div([
+                dcc.Graph(id = 'percent_bar_chart',
+                          config = {'displayModeBar': False},
+                          className = 'percent_bar_chart_size'),
+                html.Div([
+                    html.Div([
+                        html.Div(className = 'background_size1'),
+                        html.Div([
+                            html.Div(id = 'chart_text1',
+                                     className = 'chart_text1'),
+                            dcc.Graph(id = 'average_sales_bar_chart1',
+                                      config = {'displayModeBar': False},
+                                      className = 'average_sales_bar_chart1'),
+                        ], className = 'average_sales_bar_chart_row1')
+                    ], className = 'average_sales_bar_chart_column1'),
+                    html.Div([
+                        html.Div(className = 'background_size2'),
+                        html.Div([
+                            html.Div(id = 'chart_text2',
+                                     className = 'chart_text2'),
+                            dcc.Graph(id = 'average_sales_bar_chart2',
+                                      config = {'displayModeBar': False},
+                                      className = 'average_sales_bar_chart2'),
+                        ], className = 'average_sales_bar_chart_row2')
+                    ], className = 'average_sales_bar_chart_column2')
+                ], className = 'average_sales_chart_column')
+            ], className = 'average_sales_row')
         ], className = 'bar_chart_column')
     ], className = 'create_row')
 
-])
+))
 
 
 @app.callback(Output('text1', 'children'),
@@ -1805,7 +1829,6 @@ def update_graph(select_month):
         object_data = [['Target', target], ['Revenues', revenues]]
         df2 = pd.DataFrame(object_data, columns = ['Text', 'Value'])
 
-
     return {
         'data': [go.Bar(x = df2['Value'],
                         y = df2['Text'],
@@ -1877,7 +1900,6 @@ def update_graph(select_month):
     above_the_target = data['Revenues']
     data['Below the Target'] = np.where(data['Revenues'] < data['Target'], data['Revenues'], 0)
     months = data['Months']
-
 
     return {
         'data': [go.Bar(x = months,
@@ -2005,6 +2027,161 @@ def update_graph(select_month):
                          linecolor = 'white',
                          linewidth = 1,
                          ticks = '',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+
+            yaxis = dict(title = '<b></b>',
+                         visible = True,
+                         color = 'white',
+                         showline = False,
+                         showgrid = False,
+                         showticklabels = False,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = '',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+        )
+    }
+
+
+@app.callback(Output('chart_text1', 'children'),
+              [Input('select_month', 'value')])
+def update_text(select_month):
+    if select_month is None:
+        raise PreventUpdate
+    else:
+        data['AVG Sales / Customer'] = data['Revenues'] / data['Customers']
+        filter_month = data[data['Months'] == select_month]
+        average_sales_per_customer = filter_month['AVG Sales / Customer'].iloc[0]
+
+    return [
+        html.Div([
+            html.P('AVG Sales / Customer',
+                   style = {
+                       'color': 'white',
+                       'fontSize': 15,
+                       'font-weight': 'bold'
+                   }, className = 'average_sales_text'),
+            html.P('${0:,.0f}'.format(average_sales_per_customer),
+                   style = {
+                       'color': 'white',
+                       'fontSize': 25,
+                       'font-weight': 'bold'
+                   }, className = 'average_sales_value')
+        ], className = 'average_sales_column'),
+    ]
+
+
+@app.callback(Output('average_sales_bar_chart1', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    average_sales = data['AVG Sales / Customer']
+    months = data['Months']
+
+    return {
+        'data': [go.Scatter(x = months,
+                            y = average_sales,
+                            mode = 'lines',
+                            line = dict(shape = "spline", smoothing = 1.3, width = 3, color = '#00B0F0'),
+                            hoverinfo = 'skip'
+                            )],
+
+        'layout': go.Layout(
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            xaxis = dict(title = '<b></b>',
+                         visible = True,
+                         color = 'white',
+                         showline = True,
+                         showgrid = False,
+                         showticklabels = True,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = 'outside',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+
+            yaxis = dict(title = '<b></b>',
+                         visible = True,
+                         color = 'white',
+                         showline = False,
+                         showgrid = False,
+                         showticklabels = False,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = '',
+                         tickfont = dict(
+                             family = 'Arial',
+                             size = 12,
+                             color = 'white')
+                         ),
+        )
+    }
+
+@app.callback(Output('chart_text2', 'children'),
+              [Input('select_month', 'value')])
+def update_text(select_month):
+    if select_month is None:
+        raise PreventUpdate
+    else:
+        data['AVG Ticket Sales'] = data['Revenues'] / data['Orders Placed']
+        filter_month = data[data['Months'] == select_month]
+        average_ticket_sales = filter_month['AVG Ticket Sales'].iloc[0]
+
+    return [
+        html.Div([
+            html.P('AVG Ticket Sales',
+                   style = {
+                       'color': 'white',
+                       'fontSize': 15,
+                       'font-weight': 'bold'
+                   }, className = 'average_sales_text'),
+            html.P('${0:,.0f}'.format(average_ticket_sales),
+                   style = {
+                       'color': 'white',
+                       'fontSize': 25,
+                       'font-weight': 'bold'
+                   }, className = 'average_sales_value')
+        ], className = 'average_sales_column'),
+    ]
+
+
+@app.callback(Output('average_sales_bar_chart2', 'figure'),
+              [Input('select_month', 'value')])
+def update_graph(select_month):
+    average_sales = data['AVG Ticket Sales']
+    months = data['Months']
+
+    return {
+        'data': [go.Scatter(x = months,
+                            y = average_sales,
+                            mode = 'lines',
+                            line = dict(shape = "spline", smoothing = 1.3, width = 3, color = '#00B0F0'),
+                            hoverinfo = 'skip'
+                            )],
+
+        'layout': go.Layout(
+            plot_bgcolor = 'rgba(0,0,0,0)',
+            paper_bgcolor = 'rgba(0,0,0,0)',
+            xaxis = dict(title = '<b></b>',
+                         visible = True,
+                         color = 'white',
+                         showline = True,
+                         showgrid = False,
+                         showticklabels = True,
+                         linecolor = 'white',
+                         linewidth = 1,
+                         ticks = 'outside',
                          tickfont = dict(
                              family = 'Arial',
                              size = 12,

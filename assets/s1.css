@@ -577,6 +577,23 @@ there.
    gap: 5px !important;
 }
 
+.average_sales_chart_column {
+  margin-top: -1px !important;
+}
+
+.background_size1 {
+  width: 463px !important;
+}
+
+.background_size2 {
+  width: 463px !important;
+}
+
+.stack_bar_chart_size {
+  width: 463px !important;
+  margin-left: 14px !important;
+}
+
 h3 {
    font-size: 2.5rem;
 }
