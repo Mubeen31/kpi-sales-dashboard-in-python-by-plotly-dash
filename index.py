@@ -1651,10 +1651,39 @@ def update_graph(select_month):
         data['% Target'] = (data['Revenues'] / data['Target']) * 100
         filter_month = data[data['Months'] == select_month]
         percentage_target = filter_month['% Target'].iloc[0]
+        percentage_target1 = float(100.00)
         remaining_percentage_target = 100 - (filter_month['% Target'].iloc[0])
         colors = ['#DEB340', '#335476']
 
-    return {
+    if percentage_target > 100:
+        return {
+            'data': [go.Pie(labels=['', ''],
+                            values=[percentage_target1],
+                            marker=dict(colors=colors,
+                                        line=dict(color='#DEB340', width=2)),
+                            hoverinfo='skip',
+                            textinfo='text',
+                            hole=.7,
+                            rotation=0
+                            )],
+
+            'layout': go.Layout(
+                plot_bgcolor='rgba(0,0,0,0)',
+                paper_bgcolor='rgba(0,0,0,0)',
+                margin=dict(t=35, b=10, r=0, l=0),
+                showlegend=False,
+                title={'text': 'Monthly Goal',
+                       'y': 0.95,
+                       'x': 0.5,
+                       'xanchor': 'center',
+                       'yanchor': 'top'},
+                titlefont={'color': 'white',
+                           'size': 15},
+            ),
+
+        }
+    else:
+        return {
         'data': [go.Pie(labels = ['', ''],
                         values = [percentage_target, remaining_percentage_target],
                         marker = dict(colors = colors,
